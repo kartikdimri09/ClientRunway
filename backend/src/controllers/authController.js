@@ -83,9 +83,11 @@ export const loginUser = async (req, res) => {
 
     // Store JWT in Cookie
     res.cookie("token", token, {
-      httpOnly: true,
-    });
-
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+});
     res.status(200).json({
       message: "Login Successfully",
     });
@@ -97,8 +99,11 @@ export const loginUser = async (req, res) => {
 };
 
 export const logoutUser = (req, res) => {
-  res.clearCookie("token");
-
+  res.clearCookie("token", {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+});
   res.status(200).json({
     message: "Logged out successfully",
   });
