@@ -1,13 +1,43 @@
 import { useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
-import {LayoutDashboard,Users,Menu,X,} from "lucide-react";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import {LayoutDashboard,Users,Menu,X,LogOut} from "lucide-react";
 import LogoIcon from "../assets/logo-icon.png";
+import api from "../services/api";
+import toast from "react-hot-toast";
+import { useEffect } from "react";
+
 
 export default function Layout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const closeMobileMenu = () => setMobileMenuOpen(false);
   const openMobileMenu = () => setMobileMenuOpen(true);
+  const [user, setUser] = useState(null);
+
+  const handleLogout = async () => {
+  try {
+    const response = await api.post("/auth/logout");
+
+    toast.success(response.data.message);
+
+    navigate("/login");
+  } catch (error) {
+    toast.error("Logout Failed");
+  }
+};
+const fetchUser = async () => {
+  try {
+    const response = await api.get("/auth/profile");
+    setUser(response.data.user);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+useEffect(() => {
+  fetchUser();
+}, []);
 
   const navItems = [
     {
@@ -88,6 +118,15 @@ export default function Layout() {
           </p>
           <div className="mt-2 flex flex-col gap-1">{renderNavLinks()}</div>
         </nav>
+        <div className="border-t border-white/5 p-4">
+  <button
+    onClick={handleLogout}
+    className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-red-400 transition hover:bg-red-500/10"
+  >
+    <LogOut size={18} />
+    Logout
+  </button>
+</div>
       </aside>
 
       {/* Mobile drawer backdrop */}
@@ -143,37 +182,62 @@ export default function Layout() {
             </p>
             <div className="mt-2 flex flex-col gap-1">{renderNavLinks()}</div>
           </nav>
+          <div className="border-t border-white/5 p-4">
+  <button
+    onClick={handleLogout}
+    className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-red-400 transition hover:bg-red-500/10"
+  >
+    <LogOut size={18} />
+    Logout
+  </button>
+</div>
         </div>
       </aside>
 
       {/* Main content area */}
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur">
-          <div className="flex items-center justify-between gap-4 px-4 py-4 md:px-8">
-            <div className="flex items-center gap-3">
-              {/* Mobile menu button */}
-              <button
-                type="button"
-                onClick={openMobileMenu}
-                className="rounded-xl p-2 text-slate-600 transition hover:bg-slate-100 md:hidden"
-                aria-label="Open menu"
-              >
-                <Menu size={18} />
-              </button>
+  <div className="flex items-center justify-between gap-4 px-4 py-4 md:px-8">
 
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-600">
-                  ClientRunway
-                </p>
-                <h2 className="text-lg font-semibold tracking-tight text-slate-900">
-                  Onboarding workspace
-                </h2>
-              </div>
-            </div>
+    {/* Left Side */}
+    <div className="flex items-center gap-3">
+      <button
+        type="button"
+        onClick={openMobileMenu}
+        className="rounded-xl p-2 text-slate-600 transition hover:bg-slate-100 md:hidden"
+        aria-label="Open menu"
+      >
+        <Menu size={18} />
+      </button>
 
-            
-          </div>
-        </header>
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-600">
+          ClientRunway
+        </p>
+        <h2 className="text-lg font-semibold tracking-tight text-slate-900">
+          Onboarding Workspace
+        </h2>
+      </div>
+    </div>
+
+    {/* Right Side */}
+    <div className="flex items-center gap-3">
+      <div className="hidden md:block text-right">
+        <p className="text-sm font-semibold text-slate-900">
+          {user?.name}
+        </p>
+        <p className="text-xs text-slate-500">
+          {user?.email}
+        </p>
+      </div>
+
+      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-700">
+        {user?.name?.charAt(0).toUpperCase()}
+      </div>
+    </div>
+
+  </div>
+</header>
 
         <main className="flex-1 p-4 md:p-8">
           <Outlet />
@@ -182,3 +246,4 @@ export default function Layout() {
     </div>
   );
 }
+

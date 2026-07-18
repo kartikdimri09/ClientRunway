@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ClipboardList, BellRing, BarChart3 } from "lucide-react";
 import Logo from "../assets/logo.png";
+import api from "../services/api";
+import toast from "react-hot-toast";
 
 const INITIAL_FORM = {
   fullName: "",
@@ -49,25 +51,28 @@ export default function Signup() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleSubmit = async (event) => {
+  event.preventDefault();
 
-    if (!validate()) return;
+  if (!validate()) return;
 
-    setLoading(true);
+  setLoading(true);
 
-    console.log("Signup attempt:", {
-      fullName: form.fullName.trim(),
+  try {
+    const response = await api.post("/auth/register", {
+      name: form.fullName.trim(),
       email: form.email.trim(),
       password: form.password,
     });
+toast.success(response.data.message);
 
-    setTimeout(() => {
-      setLoading(false);
-      navigate("/");
-    }, 800);
-  };
-
+    navigate("/login");
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Registration failed");
+  } finally {
+    setLoading(false);
+  }
+};
   const inputClassName = (field) =>
     `w-full rounded-xl border bg-white px-4 py-2.5 text-sm text-slate-700 shadow-sm transition placeholder:text-slate-400 focus:outline-none focus:ring-2 ${
       errors[field]

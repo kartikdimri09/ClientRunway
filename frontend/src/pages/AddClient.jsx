@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Plus } from "lucide-react";
+import api from "../services/api";
+import toast from "react-hot-toast";
 
 const STATUS_OPTIONS = ["Just Started", "In Progress", "Stuck", "Live"];
 
@@ -54,25 +56,28 @@ export default function AddClient() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+const handleSubmit = async (event) => {
+  event.preventDefault();
 
-    if (!validate()) return;
+  if (!validate()) return;
 
-    const newClient = {
-      _id: String(Date.now()),
+  try {
+    const response = await api.post("/clients", {
       name: form.name.trim(),
       company: form.company.trim(),
-      contactEmail: form.contactEmail.trim(),
-      contactPhone: form.contactPhone.trim(),
+      email: form.contactEmail.trim(),
+      phone: form.contactPhone.trim(),
       status: form.status,
-      checklist: DEFAULT_CHECKLIST.map((item) => ({ ...item })),
-      notes: [],
-    };
+      notes: "",
+    });
 
-    console.log("New client created:", newClient);
+    toast.success(response.data.message);
+
     navigate("/clients");
-  };
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Failed to add client");
+  }
+};
 
   const inputClassName = (field) =>
     `w-full rounded-xl border bg-white px-4 py-2.5 text-sm text-slate-700 shadow-sm transition placeholder:text-slate-400 focus:outline-none focus:ring-2 ${

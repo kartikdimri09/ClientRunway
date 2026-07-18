@@ -1,20 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  Users,
-  Sparkles,
-  Rocket,
-  TriangleAlert,
-  BadgeCheck,
-  BellRing,
-  Plus,
-} from "lucide-react";
+import {Users,Sparkles,Rocket,TriangleAlert,BadgeCheck,BellRing,Plus,} from "lucide-react";
 import { getClients } from "../services/clientService";
-import {
-  getProgress,
-  getStatusBadge,
-  getInitials,
-} from "../utils/ClientHelpers";
+import {getProgress,getStatusBadge,getInitials,} from "../utils/ClientHelpers";
 
 export default function Dashboard() {
   const [clients, setClients] = useState([]);
@@ -82,7 +70,10 @@ export default function Dashboard() {
 
     return items.map((item) => ({
       ...item,
-      percent: Math.round((item.value / maxValue) * 100),
+      percent:
+     stats.total > 0
+    ? Math.round((item.value / stats.total) * 100)
+    : 0,
       share:
         stats.total > 0 ? Math.round((item.value / stats.total) * 100) : 0,
     }));
@@ -315,7 +306,7 @@ export default function Dashboard() {
                                 {client.name}
                               </p>
                               <p className="text-sm text-slate-500">
-                                {client.contactEmail}
+                                {client.email}
                               </p>
                             </div>
                           </div>

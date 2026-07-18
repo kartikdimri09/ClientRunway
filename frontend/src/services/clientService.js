@@ -1,9 +1,11 @@
-import { mockClients } from "../data/mockClients";
+import api from "./api";
 
 export const getClients = async () => {
-  return mockClients;
+  const response = await api.get("/clients");
+  return response.data.clients;
 };
 
 export const getClientById = async (id) => {
-  return mockClients.find((client) => client._id === id);
+  const response = await api.get(`/clients/${id}`);
+  return response.data.client;
 };

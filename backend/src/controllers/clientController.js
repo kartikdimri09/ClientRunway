@@ -1,97 +1,152 @@
 import Client from "../models/Client.js";
 
+// Add Client
 export const addClient = async (req, res) => {
-  const { name, company, email, phone, status, notes } = req.body;
+  try {
+    const { name, company, email, phone, status, notes } = req.body;
 
-  // Validation
-  if (!name || !company || !email || !phone) {
-    return res.status(400).json({
-      message: "Please fill all required fields",
-    });
-  }
-// add client
-  const newClient = await Client.create({
-    name,
-    company,
-    email,
-    phone,
-    status,
-    notes,
-    createdBy: req.user.id,
-  });
+    // Validation
+    if (!name || !company || !email || !phone) {
+      return res.status(400).json({
+        message: "Please fill all required fields",
+      });
+    }
 
-  res.status(201).json({
-    message: "Client Added Successfully",
-    client: newClient,
-  });
-};
-//get all clients
-export const getClients = async (req, res) => {
-  const clients = await Client.find({
-    createdBy: req.user.id,
-  });
-
-  res.json({
-    clients,
-  });
-};
-
-//get client by id
-export const getClientById = async (req, res) => {
-  const client = await Client.findOne({
-  _id: req.params.id,
+    // Add Client
+   const newClient = await Client.create({
+  name,
+  company,
+  email,
+  phone,
+  status,
+  checklist: [
+    {
+      label: "Docs Collected",
+      done: false,
+    },
+    {
+      label: "Training Completed",
+      done: false,
+    },
+    {
+      label: "Integration Setup",
+      done: false,
+    },
+    {
+      label: "Billing Setup",
+      done: false,
+    },
+    {
+      label: "Go-Live Approved",
+      done: false,
+    },
+  ],
+  notes,
   createdBy: req.user.id,
 });
-
-  if (!client) {
-    return res.status(404).json({
-      message: "Client not found",
+    res.status(201).json({
+      message: "Client Added Successfully",
+      client: newClient,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Server Error",
     });
   }
-
-  res.json({
-    client,
-  });
 };
 
-//update client
-export const updateClient = async (req, res) => {
-  const client = await Client.findOneAndUpdate(
-    {
+// Get All Clients
+export const getClients = async (req, res) => {
+  try {
+    const clients = await Client.find({
+      createdBy: req.user.id,
+    });
+
+    res.status(200).json({
+      clients,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Server Error",
+    });
+  }
+};
+
+// Get Client By ID
+export const getClientById = async (req, res) => {
+  try {
+    const client = await Client.findOne({
       _id: req.params.id,
       createdBy: req.user.id,
-    },
-    req.body,
-    {
-      new: true,
-    }
-  );
+    });
 
-  if (!client) {
-    return res.status(404).json({
-      message: "Client not found",
+    if (!client) {
+      return res.status(404).json({
+        message: "Client not found",
+      });
+    }
+
+    res.status(200).json({
+      client,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Server Error",
     });
   }
-
-  res.json({
-    message: "Client Updated Successfully",
-    client,
-  });
 };
 
-export const deleteClient = async (req, res) => {
-  const client = await Client.findOneAndDelete({
-    _id: req.params.id,
-    createdBy: req.user.id,
-  });
+// Update Client
+export const updateClient = async (req, res) => {
+  try {
+    const client = await Client.findOneAndUpdate(
+      {
+        _id: req.params.id,
+        createdBy: req.user.id,
+      },
+      req.body,
+      {
+        new: true,
+      }
+    );
 
-  if (!client) {
-    return res.status(404).json({
-      message: "Client not found",
+    if (!client) {
+      return res.status(404).json({
+        message: "Client not found",
+      });
+    }
+
+    res.status(200).json({
+      message: "Client Updated Successfully",
+      client,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Server Error",
     });
   }
+};
 
-  res.json({
-    message: "Client Deleted Successfully",
-  });
+// Delete Client
+export const deleteClient = async (req, res) => {
+  try {
+    const client = await Client.findOneAndDelete({
+      _id: req.params.id,
+      createdBy: req.user.id,
+    });
+
+    if (!client) {
+      return res.status(404).json({
+        message: "Client not found",
+      });
+    }
+
+    res.status(200).json({
+      message: "Client Deleted Successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Server Error",
+    });
+  }
 };

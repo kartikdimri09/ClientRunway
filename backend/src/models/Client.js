@@ -24,15 +24,26 @@ const clientSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["Pending", "In Progress", "Completed"],
-      default: "Pending",
+      enum: ["Just Started", "In Progress", "Stuck", "Live"],
+      default: "Just Started",
     },
+    checklist: [
+      {
+        label: {
+          type: String,
+          required: true,
+        },
+        done: {
+          type: Boolean,
+          default: false,
+        },
+      },
+    ],
 
     notes: {
       type: String,
       default: "",
     },
-
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
