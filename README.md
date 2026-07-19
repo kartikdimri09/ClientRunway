@@ -138,7 +138,7 @@ npm run dev
 
 ![Login](screenshots/login.png)
 
-### Singup
+### Signup
 
 ![Signup](screenshots/signup.png)
 
