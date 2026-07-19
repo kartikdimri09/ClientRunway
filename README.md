@@ -93,7 +93,7 @@ ClientRunway
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/ClientRunway.git
+git clone https://github.com/kartikdimri09/ClientRunway.git
 ```
 
 ### Install Dependencies
@@ -101,14 +101,14 @@ git clone https://github.com/YOUR_USERNAME/ClientRunway.git
 Frontend
 
 ```bash
-cd client
+cd frontend
 npm install
 ```
 
 Backend
 
 ```bash
-cd server
+cd backend
 npm install
 ```
 
@@ -128,20 +128,6 @@ npm run dev
 ```bash
 cd client
 npm run dev
-```
-
----
-
-## 🔑 Environment Variables
-
-### Server (.env)
-
-```env
-MONGO_URI=your_mongodb_connection_string
-
-JWT_SECRET=your_jwt_secret
-
-CLIENT_URL=http://localhost:5173
 ```
 
 ---
@@ -192,9 +178,7 @@ CLIENT_URL=http://localhost:5173
 
 ## 🚀 Future Improvements
 
-- Search Clients
 - File Upload Support
-- Pagination
 - Email Notifications
 - Role-Based Access Control
 - Analytics Dashboard
@@ -207,4 +191,4 @@ CLIENT_URL=http://localhost:5173
 
 GitHub: https://github.com/kartikdimri09
 
-LinkedIn: (Add Your LinkedIn)
+LinkedIn: https://www.linkedin.com/in/kartik-dimri/
