@@ -73,12 +73,12 @@ ClientRunway is a full-stack MERN application that helps businesses manage and t
 ```
 ClientRunway
 │
-├── client
+├── Frontend
 │   ├── src
 │   ├── public
 │   └── package.json
 │
-├── server
+├── Backend
 │   ├── src
 │   ├── package.json
 │   └── server.js
